@@ -19,7 +19,7 @@ module.exports.login = async (req, res, next) => {
 
 module.exports.register = async (req, res, next) => {
   try {
-    const { username, email, password, friendRequests, friends } = req.body;
+    const { username, email, password } = req.body;
     const usernameCheck = await User.findOne({ username });
     if (usernameCheck)
       return res.json({ msg: "Username already used", status: false });
@@ -31,8 +31,6 @@ module.exports.register = async (req, res, next) => {
       email,
       username,
       password: hashedPassword,
-      friendRequests,
-      friends,
     });
     delete user.password;
     return res.json({ status: true, user });
@@ -88,20 +86,114 @@ module.exports.getAllUsersFiltered = async (req, res, next) => {
   }
 };
 
-// module.exports.addFriend = async (req, res, next) => {
-//   const { username, _id, avatar, _UID } = req.body;
-//   try {
-//     const friendRequest = User.updateOne(
-//       { _id },
-//       {
-//         $push: { friendRequests: { _UID, username, avatar } },
-//       }
-//     );
-//     return res.status(200).json(friendRequest);
-//   } catch (ex) {
-//     next(ex);
-//   }
-// };
+module.exports.friendRequest = async (req, res, next) => {
+  const { username, _id, avatarImage, UID } = req.body;
+  try {
+    const checkIfAlreadyRequested = await User.find({
+      _id,
+      friendRequests: [{ UID }],
+    }).then((res) => console.log(res.data));
+    if (!checkIfAlreadyRequested) {
+      const friendRequest = await User.updateOne(
+        { _id },
+        {
+          $push: { friendRequests: [{ UID, avatarImage, username }] },
+        }
+      );
+      return res.status(200).json(friendRequest);
+    } else console.log(checkIfAlreadyRequested);
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.addFriend = async (req, res, next) => {
+  const {
+    currentUserUsername,
+    currentUserId,
+    currentUserAvatarImage,
+    requestedUserId,
+    requestedUserUsername,
+    requestedUserAvatarImage,
+  } = req.body;
+  try {
+    await User.updateOne(
+      { _id: currentUserId },
+      {
+        $pull: { friendRequests: { UID: requestedUserId } },
+      }
+    );
+    await User.updateOne(
+      { _id: currentUserId },
+      {
+        $push: {
+          friends: [
+            {
+              UID: requestedUserId,
+              avatarImage: requestedUserAvatarImage,
+              username: requestedUserUsername,
+            },
+          ],
+        },
+      }
+    );
+    await User.updateOne(
+      { _id: requestedUserId },
+      {
+        $push: {
+          friends: [
+            {
+              UID: currentUserId,
+              avatarImage: currentUserAvatarImage,
+              username: currentUserUsername,
+            },
+          ],
+        },
+      }
+    );
+    return res.status(200).json("Request was successfully completed");
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.removeFriend = async (req, res, next) => {
+  const { _id, UID } = req.body;
+  try {
+    if ((_id, UID)) {
+      await User.updateOne(
+        { _id },
+        {
+          $pull: { friends: { UID } },
+        }
+      );
+      await User.updateOne(
+        { _id: UID },
+        {
+          $pull: { friends: { UID: _id } },
+        }
+      );
+      return res.status(200).json("removeFriend");
+    } else console.log("something went wrong");
+  } catch (ex) {
+    next(ex);
+  }
+};
+
+module.exports.declineFriendRequest = async (req, res, next) => {
+  const { username, _id, avatarImage, UID } = req.body;
+  try {
+    const removeFriend = await User.updateOne(
+      { _id },
+      {
+        $pull: { friendRequests: { UID } },
+      }
+    );
+    return res.status(200).json(removeFriend);
+  } catch (ex) {
+    next(ex);
+  }
+};
 
 module.exports.setAvatar = async (req, res, next) => {
   try {

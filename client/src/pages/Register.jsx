@@ -41,9 +41,9 @@ export default function Register() {
         toastOptions
       );
       return false;
-    } else if (username.length < 3) {
+    } else if (username.length < 3 || username.length > 12) {
       toast.error(
-        "Username should be greater than 3 characters.",
+        "Username should be greater than 3 but not over 12 characters.",
         toastOptions
       );
       return false;
@@ -90,7 +90,7 @@ export default function Register() {
         <form action="" onSubmit={(event) => handleSubmit(event)}>
           <div className="brand">
             <img src={Logo} alt="logo" />
-            <h1>snappy</h1>
+            <h1>chatib</h1>
           </div>
           <input
             type="text"

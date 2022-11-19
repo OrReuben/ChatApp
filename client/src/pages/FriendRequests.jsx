@@ -5,12 +5,17 @@ import { FiUserCheck, FiUserX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 import axios from "axios";
-import { findUserRoute } from "../utils/APIRoutes";
+import {
+  confirmFriendRequestRoute,
+  declineFriendRequestRoute,
+  findUserRoute,
+} from "../utils/APIRoutes";
 
 const FriendRequest = () => {
   const navigate = useNavigate();
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
+  const [currentUserId, setCurrentUserId] = useState(undefined);
   const [query, setQuery] = useState("");
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +29,7 @@ const FriendRequest = () => {
       );
       setCurrentUserName(data.username);
       setCurrentUserImage(data.avatarImage);
+      setCurrentUserId(data._id);
       setLoading(false);
     };
     setUserInfo();
@@ -50,8 +56,29 @@ const FriendRequest = () => {
     setFilteredUsers(Search());
   }, [query, allUsers]);
 
-  const handleConfirmFriend = () => {};
-  const handleDeclineFriend = () => {};
+  const handleConfirmFriend = async (user) => {
+    try {
+      await axios.post(`${confirmFriendRequestRoute}`, {
+        currentUserUsername: currentUserName,
+        currentUserId: currentUserId,
+        currentUserAvatarImage: currentUserImage,
+        requestedUserId: user.UID,
+        requestedUserUsername: user.username,
+        requestedUserAvatarImage: user.avatarImage,
+      });
+      window.location.reload();
+    } catch {}
+  };
+  const handleDeclineFriend = async (user) => {
+    // console.log({ _id: currentUserId, UID: user.UID });
+    try {
+      await axios.post(`${declineFriendRequestRoute}`, {
+        _id: currentUserId,
+        UID: user.UID,
+      });
+      window.location.reload();
+    } catch {}
+  };
   return (
     <Container>
       <div className="container">
@@ -71,7 +98,7 @@ const FriendRequest = () => {
           </div>
           <div className="logo" onClick={() => navigate("/")}>
             <img src={Logo} alt="logo" />
-            <h3>snappy</h3>
+            <h3>chatib</h3>
           </div>
           <div className="nav-options">
             <button className="nav-home" onClick={() => navigate("/")}>
@@ -110,13 +137,13 @@ const FriendRequest = () => {
               <div className="user-actions">
                 <button
                   className="confirm-button"
-                  onClick={handleConfirmFriend}
+                  onClick={() => handleConfirmFriend(user)}
                 >
                   <FiUserCheck />
                 </button>
                 <button
                   className="decline-button"
-                  onClick={handleDeclineFriend}
+                  onClick={() => handleDeclineFriend(user)}
                 >
                   <FiUserX />
                 </button>
@@ -237,16 +264,21 @@ const Container = styled.div`
         background-color: #9900ff20;
         color: white;
 
-        ::placeholder {
-          margin-right: 10px;
+        @media screen and (max-width: 650px){
+          font-size: 20px;
         }
       }
       svg {
         position: absolute;
         font-size: 35px;
-        top: 0.9vh;
-        right: 5vw;
+        top: 0.5rem;
+        right: 2.5rem;
         color: white;
+        @media screen and (max-width: 650px){
+          font-size: 25px;
+          top: 0.75rem;
+        right: 2rem;
+        }
       }
     }
     .all-users-container {

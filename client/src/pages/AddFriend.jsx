@@ -9,13 +9,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/logo.svg";
 import axios from "axios";
-import { findUserRoute } from "../utils/APIRoutes";
+import { findUserRoute, friendRequestRoute } from "../utils/APIRoutes";
 import { BiUserCheck } from "react-icons/bi";
+import { toast, ToastContainer } from "react-toastify";
 
 const AddFriend = () => {
   const navigate = useNavigate();
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
+  const [currentUserId, setCurrentUserId] = useState(undefined);
   const [query, setQuery] = useState("");
   const [allUsers, setAllUsers] = useState([]);
   const [friendRequestCounter, setFriendRequestCounter] = useState("");
@@ -30,6 +32,7 @@ const AddFriend = () => {
       );
       setCurrentUserName(data.username);
       setCurrentUserImage(data.avatarImage);
+      setCurrentUserId(data._id);
       setLoading(false);
     };
     setUserInfo();
@@ -47,7 +50,33 @@ const AddFriend = () => {
     getUserFriendRequests();
   }, [currentUserName, loading]);
 
-  useEffect(() => {});
+  useEffect(() => {
+    const getAddedUsers = async () => {
+      const addedUsers = await axios.get(
+        `${findUserRoute}?username=${currentUserName?.toLowerCase()}`
+      );
+      const allFriendsAdded = [];
+      const friendRequests = [];
+      const friendsList = [];
+      const allFriendsUID = [];
+
+      !loading &&
+        addedUsers &&
+        friendRequests.push(addedUsers.data[0].friendRequests);
+      !loading && addedUsers && friendsList.push(addedUsers.data[0].friends);
+      !loading &&
+        addedUsers &&
+        allFriendsAdded.push(friendRequests[0].concat(friendsList[0]));
+
+      if (!loading && addedUsers) {
+        for (let index = 0; index < allFriendsAdded[0].length; index++) {
+          allFriendsUID.push(allFriendsAdded[0][index].UID);
+        }
+      }
+      !loading && addedUsers && setAdded(allFriendsUID);
+    };
+    getAddedUsers();
+  }, [currentUserName, loading]);
 
   useEffect(() => {
     const findQueryUsers = async () => {
@@ -60,15 +89,52 @@ const AddFriend = () => {
     findQueryUsers();
   }, [query]);
 
-  const searchAdd = (index) => {
-    if (added) {
-      return added.map((add) => add === index);
+  const toastOptions = {
+    position: "bottom-right",
+    autoClose: 8000,
+    pauseOnHover: true,
+    draggable: true,
+    theme: "dark",
+  };
+
+  const handleAddFriend = async (user) => {
+    try {
+      await axios.post(`${friendRequestRoute}`, {
+        _id: user._id,
+        UID: currentUserId,
+        username: currentUserName,
+        avatarImage: currentUserImage,
+      });
+      setAdded([...added, user._id]);
+      toast.success("User has been successfully added", toastOptions);
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong..", toastOptions);
     }
   };
 
-  const handleAddFriend = (index) => {
-    setAdded([...added, index]);
+  const searchAdd = (id) => {
+    if (added) {
+      return added.map((add) => add === id);
+    }
   };
+  const searchFriendRequests = (user) => {
+    const friendReq = user && user.friendRequests;
+    const allFriendReq = [];
+    const checkIfRight = [];
+    if (friendReq) {
+      friendReq.map((req) => {
+        return allFriendReq.push(...allFriendReq, req.UID);
+      });
+    }
+    if (allFriendReq) {
+      allFriendReq.map((id) => {
+        return checkIfRight.push(id === currentUserId);
+      });
+    }
+    return checkIfRight;
+  };
+
   return (
     <Container>
       <div className="container">
@@ -88,7 +154,7 @@ const AddFriend = () => {
           </div>
           <div className="logo" onClick={() => navigate("/")}>
             <img src={Logo} alt="logo" />
-            <h3>snappy</h3>
+            <h3>chatib</h3>
           </div>
           <div className="nav-options">
             <button className="nav-home" onClick={() => navigate("/")}>
@@ -101,9 +167,11 @@ const AddFriend = () => {
               <AiOutlineUsergroupAdd />
             </button>
           </div>
-          <div className="friend-request-counter">
-            {friendRequestCounter && friendRequestCounter}
-          </div>
+          {friendRequestCounter !== 0 && (
+            <div className="friend-request-counter">
+              {friendRequestCounter && friendRequestCounter}
+            </div>
+          )}
         </div>
         <div className="search-container">
           <AiOutlineSearch />
@@ -128,11 +196,23 @@ const AddFriend = () => {
                 </div>
               </div>
               <button
-                onClick={() => handleAddFriend(index)}
-                disabled={added === index}
-                className={searchAdd(index).includes(true) ? "added" : ""}
+                onClick={() => handleAddFriend(user)}
+                disabled={
+                  added === user._id ||
+                  currentUserId === user._id ||
+                  searchFriendRequests(user).includes(true)
+                }
+                className={
+                  searchAdd(user._id).includes(true) ||
+                  currentUserId === user._id ||
+                  searchFriendRequests(user).includes(true)
+                    ? "added"
+                    : ""
+                }
               >
-                {searchAdd(index).includes(true) ? (
+                {searchAdd(user._id).includes(true) ||
+                currentUserId === user._id ||
+                searchFriendRequests(user).includes(true) ? (
                   <BiUserCheck />
                 ) : (
                   <AiOutlineUserAdd />
@@ -142,6 +222,7 @@ const AddFriend = () => {
           ))}
         </div>
       </div>
+      <ToastContainer />
     </Container>
   );
 };
@@ -268,17 +349,21 @@ const Container = styled.div`
         font-size: 30px;
         background-color: #9900ff20;
         color: white;
-
-        ::placeholder {
-          margin-right: 10px;
+        @media screen and (max-width: 650px) {
+          font-size: 20px;
         }
       }
       svg {
         position: absolute;
         font-size: 35px;
-        top: 0.9vh;
-        right: 5vw;
+        top: 0.5rem;
+        right: 2.5rem;
         color: white;
+        @media screen and (max-width: 650px) {
+          font-size: 25px;
+          top: 0.75rem;
+          right: 2rem;
+        }
       }
     }
     .all-users-container {
@@ -343,7 +428,7 @@ const Container = styled.div`
             }
           }
         }
-       
+
         button {
           display: flex;
           justify-content: center;
@@ -361,10 +446,10 @@ const Container = styled.div`
             font-size: 20px;
           }
         }
-        .added{
-            background-color: green;   
-            opacity: 0.5;
-            cursor: not-allowed;
+        .added {
+          background-color: green;
+          opacity: 0.5;
+          cursor: not-allowed;
         }
       }
     }

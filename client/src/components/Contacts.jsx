@@ -16,19 +16,19 @@ export default function Contacts({
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
   const [friendRequestCounter, setFriendRequestCounter] = useState("");
-  const [loading, setLoading] = useState(true)
-  
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const setUserInfo = async () => {
-      setLoading(true)
+      setLoading(true);
       const data = await JSON.parse(
         localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
       );
       setCurrentUserName(data.username);
       setCurrentUserImage(data.avatarImage);
-      setLoading(false)
+      setLoading(false);
     };
     setUserInfo();
   }, []);
@@ -40,13 +40,15 @@ export default function Contacts({
 
   useEffect(() => {
     const getUserFriendRequests = async () => {
-         const user = await axios.get(
-           `${findUserRoute}?username=${currentUserName?.toLowerCase()}`
-         );
-         !loading && user && setFriendRequestCounter(user.data[0].friendRequests.length);
-       };
-       getUserFriendRequests();
-     }, [currentUserName, loading]);
+      const user = await axios.get(
+        `${findUserRoute}?username=${currentUserName?.toLowerCase()}`
+      );
+      !loading &&
+        user &&
+        setFriendRequestCounter(user.data[0].friendRequests.length);
+    };
+    getUserFriendRequests();
+  }, [currentUserName, loading]);
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -55,11 +57,13 @@ export default function Contacts({
             <button onClick={() => navigate("/add-friend")}>
               <FaUserFriends />
             </button>
-            <div className="user-friend-requests">
-              {friendRequestCounter && friendRequestCounter}
-            </div>
+            {friendRequestCounter !== 0 && (
+              <div className="user-friend-requests">
+                {friendRequestCounter && friendRequestCounter}
+              </div>
+            )}
             <img src={Logo} alt="logo" />
-            <h3>snappy</h3>
+            <h3>chatib</h3>
           </div>
           <div className="contacts">
             {contacts.map((contact, index) => {
@@ -121,23 +125,23 @@ const Container = styled.div`
       border: none;
       cursor: pointer;
       position: absolute;
-      top:0.7rem;
+      top: 0.7rem;
       left: 1rem;
-      color:white;
+      color: white;
     }
-    .user-friend-requests{
+    .user-friend-requests {
       border-radius: 50%;
-        background-color: red;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 17px;
-        height: 17px;
-        font-size: 13px;
-        top:0.3rem;
-        left: 0.5rem;
-        position: absolute;
-        color: white;
+      background-color: red;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      font-size: 13px;
+      top: 0.3rem;
+      left: 0.5rem;
+      position: absolute;
+      color: white;
     }
     img {
       height: 2rem;

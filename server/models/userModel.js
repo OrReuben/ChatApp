@@ -36,9 +36,9 @@ const userSchema = new mongoose.Schema({
   ],
   friendRequests: [
     {
-      UID: { type: String },
+      UID: { type: String},
       avatarImage: { type: String },
-      username: { type: String },
+      username: { type: String},
     },
   ],
 });
