@@ -98,8 +98,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
   background-color: #131324;
 
   .container {
@@ -112,7 +112,7 @@ const Container = styled.div`
       grid-template-columns: 40% 60%;
     }
     @media screen and (max-width: 600px) {
-      height: 85vh;
+      height: 90vh;
       width: 95vw;
       background-color: #00000076;
       display: grid;

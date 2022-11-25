@@ -82,6 +82,11 @@ const FriendRequest = () => {
       window.location.reload();
     } catch {}
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Container>
       <div className="container">

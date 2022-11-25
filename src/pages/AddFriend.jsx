@@ -91,6 +91,10 @@ const AddFriend = () => {
     };
     findQueryUsers();
   }, [query]);
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const toastOptions = {
     position: "bottom-right",
