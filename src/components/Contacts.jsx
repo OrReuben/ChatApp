@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { findUserRoute } from "../utils/APIRoutes";
 import { AiOutlineSearch } from "react-icons/ai";
+import Logout from "../components/Logout";
+import robot from "../assets/robot.gif";
 
 export default function Contacts({
   contacts,
@@ -67,6 +69,7 @@ export default function Contacts({
     };
     getUserFriendRequests();
   }, [currentUserName, loading]);
+
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -80,6 +83,9 @@ export default function Contacts({
                 {friendRequestCounter && friendRequestCounter}
               </div>
             )}
+            <div style={{ position: "absolute", top: 0, right: "4rem" }}>
+              <Logout />
+            </div>
             <img src={Logo} alt="logo" />
             <h3>chatib</h3>
           </div>
@@ -92,27 +98,37 @@ export default function Contacts({
             <AiOutlineSearch />
           </div>
           <div className="contacts">
-            {filteredContacts.map((contact, index) => {
-              return (
-                <div
-                  key={contact._id}
-                  className={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  }`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
-                  <div className="avatar">
-                    <img
-                      src={`data:image/svg+xml;base64,${contact?.avatarImage}`}
-                      alt=""
-                    />
+            {filteredContacts.length === 0 ? (
+              <div className="no-contacts-container">
+                <img src={robot} alt="" />
+                <h2>Hello there, {currentUserName}</h2>
+                <br />
+                <h3>Seems like you're alone..</h3>
+                <div onClick={() => navigate('/add-friend')}>Click me!</div>
+              </div>
+            ) : (
+              filteredContacts.map((contact, index) => {
+                return (
+                  <div
+                    key={contact._id}
+                    className={`contact ${
+                      index === currentSelected ? "selected" : ""
+                    }`}
+                    onClick={() => changeCurrentChat(index, contact)}
+                  >
+                    <div className="avatar">
+                      <img
+                        src={`data:image/svg+xml;base64,${contact?.avatarImage}`}
+                        alt=""
+                      />
+                    </div>
+                    <div className="username">
+                      <h3>{contact.username}</h3>
+                    </div>
                   </div>
-                  <div className="username">
-                    <h3>{contact.username}</h3>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
           <div className="current-user">
             <div className="avatar">
@@ -194,7 +210,7 @@ const Container = styled.div`
       color: white;
       font-size: 20px;
 
-      ::placeholder{
+      ::placeholder {
         font-size: 15px;
         margin-left: 4px;
       }
@@ -226,6 +242,29 @@ const Container = styled.div`
     }
     @media screen and (max-width: 600px) {
       width: 85vw;
+    }
+    .no-contacts-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      img {
+        height: 30vh;
+      }
+      h2 {
+        color: white;
+      }
+      h3 {
+        color: white;
+      }
+      div {
+        background-color: #9a86f3;
+        color: white;
+        margin-top: 20px;
+        padding: 1rem 3rem;
+        border-radius: 15px;
+        font-weight: 700;
+      }
     }
     .contact {
       background-color: #ffffff34;

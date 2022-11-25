@@ -127,12 +127,21 @@ const Container = styled.div`
   .title-container {
     h1 {
       color: white;
+      text-align: center;
+      @media screen and (max-width: 650px){
+        font-size: 25px;
+      }
     }
   }
   .avatars {
     display: flex;
     gap: 2rem;
-
+    justify-content: center;
+    align-content: center;
+    flex-wrap: wrap;
+    @media screen and (max-width: 650px){
+      gap:1rem
+    }
     .avatar {
       border: 0.4rem solid transparent;
       padding: 0.4rem;
@@ -144,6 +153,9 @@ const Container = styled.div`
       img {
         height: 6rem;
         transition: 0.5s ease-in-out;
+        @media screen and (max-width: 650px){
+          height: 3.5rem;
+        }
       }
     }
     .selected {
@@ -160,6 +172,7 @@ const Container = styled.div`
     border-radius: 0.4rem;
     font-size: 1rem;
     text-transform: uppercase;
+    max-width: 90vw;
     &:hover {
       background-color: #4e0eff;
     }
