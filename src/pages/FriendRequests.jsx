@@ -10,6 +10,8 @@ import {
   declineFriendRequestRoute,
   findUserRoute,
 } from "../utils/APIRoutes";
+import LoadingLottie from "../assets/98432-loading.json";
+import Lottie from "react-lottie-player";
 
 const FriendRequest = () => {
   const navigate = useNavigate();
@@ -37,13 +39,15 @@ const FriendRequest = () => {
 
   useEffect(() => {
     const findQueryUsers = async () => {
+      setLoading(true);
       const users = await axios.get(
         `${findUserRoute}?username=${currentUserName?.toLowerCase()}`
       );
-      !loading && users && setAllUsers(users.data[0].friendRequests);
+      users.data[0] && setAllUsers(users.data[0].friendRequests);
+      setLoading(false);
     };
     findQueryUsers();
-  }, [currentUserName, loading]);
+  }, [currentUserName]);
 
   useEffect(() => {
     const Search = () => {
@@ -70,7 +74,6 @@ const FriendRequest = () => {
     } catch {}
   };
   const handleDeclineFriend = async (user) => {
-    // console.log({ _id: currentUserId, UID: user.UID });
     try {
       await axios.post(`${declineFriendRequestRoute}`, {
         _id: currentUserId,
@@ -121,35 +124,44 @@ const FriendRequest = () => {
           />
         </div>
         <div className="all-users-container">
-          {filteredUsers.map((user) => (
-            <div key={user._id} className="user">
-              <div className="user-credentials">
-                <div className="avatar">
-                  <img
-                    src={`data:image/svg+xml;base64,${user?.avatarImage}`}
-                    alt=""
-                  />
+          {loading ? (
+            <Lottie
+              loop
+              animationData={LoadingLottie}
+              play
+              style={{ width: 300, height: 500 }}
+            />
+          ) : (
+            filteredUsers.map((user) => (
+              <div key={user._id} className="user">
+                <div className="user-credentials">
+                  <div className="avatar">
+                    <img
+                      src={`data:image/svg+xml;base64,${user?.avatarImage}`}
+                      alt=""
+                    />
+                  </div>
+                  <div className="username">
+                    <h3>{user.username}</h3>
+                  </div>
                 </div>
-                <div className="username">
-                  <h3>{user.username}</h3>
+                <div className="user-actions">
+                  <button
+                    className="confirm-button"
+                    onClick={() => handleConfirmFriend(user)}
+                  >
+                    <FiUserCheck />
+                  </button>
+                  <button
+                    className="decline-button"
+                    onClick={() => handleDeclineFriend(user)}
+                  >
+                    <FiUserX />
+                  </button>
                 </div>
               </div>
-              <div className="user-actions">
-                <button
-                  className="confirm-button"
-                  onClick={() => handleConfirmFriend(user)}
-                >
-                  <FiUserCheck />
-                </button>
-                <button
-                  className="decline-button"
-                  onClick={() => handleDeclineFriend(user)}
-                >
-                  <FiUserX />
-                </button>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </Container>
@@ -172,7 +184,10 @@ const Container = styled.div`
     background-color: #00000076;
     display: grid;
     grid-template-rows: 12% 10% 78%;
-
+    @media screen and (max-width: 600px) {
+      height: 95vh;
+      width: 95vw;
+    }
     .brand {
       display: flex;
       align-items: center;
@@ -264,7 +279,7 @@ const Container = styled.div`
         background-color: #9900ff20;
         color: white;
 
-        @media screen and (max-width: 650px){
+        @media screen and (max-width: 650px) {
           font-size: 20px;
         }
       }
@@ -274,10 +289,10 @@ const Container = styled.div`
         top: 0.5rem;
         right: 4rem;
         color: white;
-        @media screen and (max-width: 650px){
+        @media screen and (max-width: 650px) {
           font-size: 25px;
           top: 0.75rem;
-        right: 2rem;
+          right: 2rem;
         }
       }
     }
