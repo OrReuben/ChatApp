@@ -71,6 +71,7 @@ export default function Chat() {
             changeChat={handleChatChange}
             setShowMobileChat={setShowMobileChat}
             showMobileChat={showMobileChat}
+            setContacts={setContacts}
           />
           {currentChat === undefined ? (
             <Welcome />

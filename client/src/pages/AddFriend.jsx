@@ -357,7 +357,7 @@ const Container = styled.div`
         position: absolute;
         font-size: 35px;
         top: 0.5rem;
-        right: 2.5rem;
+        right: 4rem;
         color: white;
         @media screen and (max-width: 650px) {
           font-size: 25px;

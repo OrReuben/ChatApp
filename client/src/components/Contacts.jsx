@@ -5,16 +5,20 @@ import { FaUserFriends } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { findUserRoute } from "../utils/APIRoutes";
+import { AiOutlineSearch } from "react-icons/ai";
 
 export default function Contacts({
   contacts,
   changeChat,
   setShowMobileChat,
   showMobileChat,
+  setContacts,
 }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
+  const [filteredContacts, setFilteredContacts] = useState([]);
+  // const [query, setQuery] = useState("");
   const [friendRequestCounter, setFriendRequestCounter] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +42,20 @@ export default function Contacts({
     changeChat(contact);
   };
 
+  useEffect(() => {
+    setFilteredContacts(contacts);
+  }, [contacts]);
+  const searchContacts = (query) => {
+    if (query.length > 0) {
+      const searchedContacts = [];
+      contacts.map(
+        (contact) =>
+          contact.username.toLowerCase().includes(query) &&
+          searchedContacts.push(contact)
+      );
+      setFilteredContacts(searchedContacts);
+    } else setFilteredContacts(contacts);
+  };
   useEffect(() => {
     const getUserFriendRequests = async () => {
       const user = await axios.get(
@@ -65,8 +83,16 @@ export default function Contacts({
             <img src={Logo} alt="logo" />
             <h3>chatib</h3>
           </div>
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Looking for someone?.."
+              onChange={(e) => searchContacts(e.target.value)}
+            />
+            <AiOutlineSearch />
+          </div>
           <div className="contacts">
-            {contacts.map((contact, index) => {
+            {filteredContacts.map((contact, index) => {
               return (
                 <div
                   key={contact._id}
@@ -106,7 +132,7 @@ export default function Contacts({
 }
 const Container = styled.div`
   display: ${(props) => (props.showMobileChat === 1 ? "none" : "grid")};
-  grid-template-rows: 10% 75% 15%;
+  grid-template-rows: 10% 5% 70%;
   overflow: hidden;
   background-color: #080420;
   .brand {
@@ -149,6 +175,39 @@ const Container = styled.div`
     h3 {
       color: white;
       text-transform: uppercase;
+    }
+  }
+  .search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    input {
+      width: 90%;
+      height: 100%;
+      margin-bottom: 0.5rem;
+      background-color: #9900ff20;
+      border: 2px solid transparent;
+      border-radius: 20px;
+      color: white;
+      font-size: 20px;
+
+      ::placeholder{
+        font-size: 15px;
+        margin-left: 4px;
+      }
+    }
+    svg {
+      position: absolute;
+      top: 1px;
+      right: 1.4rem;
+      color: white;
+
+      @media screen and (max-width: 650px) {
+        right: 1.9rem;
+      }
     }
   }
   .contacts {
