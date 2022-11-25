@@ -52,7 +52,7 @@ export default function Contacts({
       const searchedContacts = [];
       contacts.map(
         (contact) =>
-          contact.username.toLowerCase().includes(query) &&
+          contact.username.toLowerCase().includes(query.toLowerCase()) &&
           searchedContacts.push(contact)
       );
       setFilteredContacts(searchedContacts);
@@ -77,7 +77,7 @@ export default function Contacts({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -113,7 +113,7 @@ export default function Contacts({
                 play
                 style={{ width: 300, height: 500 }}
               />
-            ) : !loading && filteredContacts.length === 0 ? (
+            ) : !loading && contacts.length === 0 ? (
               <div className="no-contacts-container">
                 <img src={robot} alt="" />
                 <h2>Hello there, {currentUserName}</h2>
