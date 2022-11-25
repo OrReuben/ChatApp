@@ -74,6 +74,10 @@ export default function Contacts({
     }
   }, [currentUserName, loadingContacts]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  
   return (
     <>
       {currentUserImage && currentUserImage && (
