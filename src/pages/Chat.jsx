@@ -112,11 +112,12 @@ const Container = styled.div`
       grid-template-columns: 40% 60%;
     }
     @media screen and (max-width: 600px) {
-      height: 95vh;
+      height: 90vh;
       width: 95vw;
       background-color: #00000076;
       display: grid;
       grid-template-columns: 100%;
+      margin-bottom: 5vh;
     }
   }
 `;
