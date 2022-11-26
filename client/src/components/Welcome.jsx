@@ -19,10 +19,12 @@ export default function Welcome() {
 
   return (
     <Container>
-      <div style={{width:"90%", height:"20%", display:"flex",alignItems:"flex-end", justifyContent:"flex-end"}}>
-      <Logout />
+      <div className="img-welcome">
+        <img src={Robot} alt="" />
+        <div className="logout-welcome">
+          <Logout />
+        </div>
       </div>
-      <img src={Robot} alt=""  />
       <h1>
         Welcome, <span>{userName}!</span>
       </h1>
@@ -44,12 +46,24 @@ const Container = styled.div`
   align-items: center;
   color: white;
   flex-direction: column;
-
+  position: relative;
   @media screen and (max-width: 600px) {
     display: none;
   }
-  img {
-    height: 17rem;
+  .img-welcome {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    img {
+      height: 20rem;
+    }
+  }
+  .logout-welcome {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
   }
   span {
     color: #4e0eff;

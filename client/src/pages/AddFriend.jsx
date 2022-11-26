@@ -12,6 +12,8 @@ import axios from "axios";
 import { findUserRoute, friendRequestRoute } from "../utils/APIRoutes";
 import { BiUserCheck } from "react-icons/bi";
 import { toast, ToastContainer } from "react-toastify";
+import LoadingLottie from "../assets/98432-loading.json";
+import Lottie from "react-lottie-player";
 
 const AddFriend = () => {
   const navigate = useNavigate();
@@ -40,15 +42,16 @@ const AddFriend = () => {
 
   useEffect(() => {
     const getUserFriendRequests = async () => {
+      setLoading(true);
       const user = await axios.get(
         `${findUserRoute}?username=${currentUserName?.toLowerCase()}`
       );
-      !loading &&
-        user &&
+      user.data[0] &&
         setFriendRequestCounter(user.data[0].friendRequests.length);
+      setLoading(false);
     };
     getUserFriendRequests();
-  }, [currentUserName, loading]);
+  }, [currentUserName]);
 
   useEffect(() => {
     const getAddedUsers = async () => {
@@ -88,6 +91,10 @@ const AddFriend = () => {
     };
     findQueryUsers();
   }, [query]);
+  
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const toastOptions = {
     position: "bottom-right",
@@ -182,44 +189,53 @@ const AddFriend = () => {
           />
         </div>
         <div className="all-users-container">
-          {allUsers.map((user, index) => (
-            <div key={user._id} className="user">
-              <div className="user-credentials">
-                <div className="avatar">
-                  <img
-                    src={`data:image/svg+xml;base64,${user?.avatarImage}`}
-                    alt=""
-                  />
+          {loading ? (
+            <Lottie
+              loop
+              animationData={LoadingLottie}
+              play
+              style={{ width: 300, height: 500 }}
+            />
+          ) : (
+            allUsers.map((user, index) => (
+              <div key={user._id} className="user">
+                <div className="user-credentials">
+                  <div className="avatar">
+                    <img
+                      src={`data:image/svg+xml;base64,${user?.avatarImage}`}
+                      alt=""
+                    />
+                  </div>
+                  <div className="username">
+                    <h3>{user.username}</h3>
+                  </div>
                 </div>
-                <div className="username">
-                  <h3>{user.username}</h3>
-                </div>
+                <button
+                  onClick={() => handleAddFriend(user)}
+                  disabled={
+                    added === user._id ||
+                    currentUserId === user._id ||
+                    searchFriendRequests(user).includes(true)
+                  }
+                  className={
+                    searchAdd(user._id).includes(true) ||
+                    currentUserId === user._id ||
+                    searchFriendRequests(user).includes(true)
+                      ? "added"
+                      : ""
+                  }
+                >
+                  {searchAdd(user._id).includes(true) ||
+                  currentUserId === user._id ||
+                  searchFriendRequests(user).includes(true) ? (
+                    <BiUserCheck />
+                  ) : (
+                    <AiOutlineUserAdd />
+                  )}
+                </button>
               </div>
-              <button
-                onClick={() => handleAddFriend(user)}
-                disabled={
-                  added === user._id ||
-                  currentUserId === user._id ||
-                  searchFriendRequests(user).includes(true)
-                }
-                className={
-                  searchAdd(user._id).includes(true) ||
-                  currentUserId === user._id ||
-                  searchFriendRequests(user).includes(true)
-                    ? "added"
-                    : ""
-                }
-              >
-                {searchAdd(user._id).includes(true) ||
-                currentUserId === user._id ||
-                searchFriendRequests(user).includes(true) ? (
-                  <BiUserCheck />
-                ) : (
-                  <AiOutlineUserAdd />
-                )}
-              </button>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
       <ToastContainer />
@@ -236,14 +252,16 @@ const Container = styled.div`
   gap: 1rem;
   align-items: center;
   background-color: #131324;
-
   .container {
     height: 85vh;
     width: 85vw;
     background-color: #00000076;
     display: grid;
     grid-template-rows: 12% 10% 78%;
-
+    @media screen and (max-width: 600px) {
+      height: 95vh;
+      width: 95vw;
+    }
     .brand {
       display: flex;
       align-items: center;

@@ -6,19 +6,22 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { findUserRoute } from "../utils/APIRoutes";
 import { AiOutlineSearch } from "react-icons/ai";
+import Logout from "../components/Logout";
+import robot from "../assets/robot.gif";
+import LoadingLottie from "../assets/98432-loading.json";
+import Lottie from "react-lottie-player";
 
 export default function Contacts({
   contacts,
   changeChat,
   setShowMobileChat,
   showMobileChat,
-  setContacts,
+  loadingContacts,
 }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
   const [filteredContacts, setFilteredContacts] = useState([]);
-  // const [query, setQuery] = useState("");
   const [friendRequestCounter, setFriendRequestCounter] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -32,7 +35,6 @@ export default function Contacts({
       );
       setCurrentUserName(data.username);
       setCurrentUserImage(data.avatarImage);
-      setLoading(false);
     };
     setUserInfo();
   }, []);
@@ -50,23 +52,32 @@ export default function Contacts({
       const searchedContacts = [];
       contacts.map(
         (contact) =>
-          contact.username.toLowerCase().includes(query) &&
+          contact.username.toLowerCase().includes(query.toLowerCase()) &&
           searchedContacts.push(contact)
       );
       setFilteredContacts(searchedContacts);
     } else setFilteredContacts(contacts);
   };
   useEffect(() => {
-    const getUserFriendRequests = async () => {
-      const user = await axios.get(
-        `${findUserRoute}?username=${currentUserName?.toLowerCase()}`
-      );
-      !loading &&
-        user &&
-        setFriendRequestCounter(user.data[0].friendRequests.length);
-    };
-    getUserFriendRequests();
-  }, [currentUserName, loading]);
+    if (!loadingContacts) {
+      const getUserFriendRequests = async () => {
+        setLoading(true);
+        const user = await axios.get(
+          `${findUserRoute}?username=${currentUserName?.toLowerCase()}`
+        );
+        user.data[0] &&
+          setFriendRequestCounter(user.data[0].friendRequests.length);
+
+        setLoading(false);
+      };
+      getUserFriendRequests();
+    }
+  }, [currentUserName, loadingContacts]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <>
       {currentUserImage && currentUserImage && (
@@ -80,6 +91,9 @@ export default function Contacts({
                 {friendRequestCounter && friendRequestCounter}
               </div>
             )}
+            <div className="logout-contacts">
+              <Logout />
+            </div>
             <img src={Logo} alt="logo" />
             <h3>chatib</h3>
           </div>
@@ -92,27 +106,44 @@ export default function Contacts({
             <AiOutlineSearch />
           </div>
           <div className="contacts">
-            {filteredContacts.map((contact, index) => {
-              return (
-                <div
-                  key={contact._id}
-                  className={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  }`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
-                  <div className="avatar">
-                    <img
-                      src={`data:image/svg+xml;base64,${contact?.avatarImage}`}
-                      alt=""
-                    />
+            {loading ? (
+              <Lottie
+                loop
+                animationData={LoadingLottie}
+                play
+                style={{ width: 300, height: 500 }}
+              />
+            ) : !loading && contacts.length === 0 ? (
+              <div className="no-contacts-container">
+                <img src={robot} alt="" />
+                <h2>Hello there, {currentUserName}</h2>
+                <br />
+                <h3>Seems like you're alone..</h3>
+                <div onClick={() => navigate("/add-friend")}>Click me!</div>
+              </div>
+            ) : (
+              filteredContacts.map((contact, index) => {
+                return (
+                  <div
+                    key={contact._id}
+                    className={`contact ${
+                      index === currentSelected ? "selected" : ""
+                    }`}
+                    onClick={() => changeCurrentChat(index, contact)}
+                  >
+                    <div className="avatar">
+                      <img
+                        src={`data:image/svg+xml;base64,${contact?.avatarImage}`}
+                        alt=""
+                      />
+                    </div>
+                    <div className="username">
+                      <h3>{contact.username}</h3>
+                    </div>
                   </div>
-                  <div className="username">
-                    <h3>{contact.username}</h3>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })
+            )}
           </div>
           <div className="current-user">
             <div className="avatar">
@@ -141,6 +172,21 @@ const Container = styled.div`
     gap: 1rem;
     justify-content: center;
     position: relative;
+    .logout-contacts {
+      position: absolute;
+      top: 0;
+      right: 4rem;
+      display: none;
+      button {
+        padding: 7px;
+      }
+      svg {
+        font-size: 20px;
+      }
+      @media screen and (max-width: 600px) {
+        display: block;
+      }
+    }
     button {
       display: flex;
       justify-content: center;
@@ -194,7 +240,7 @@ const Container = styled.div`
       color: white;
       font-size: 20px;
 
-      ::placeholder{
+      ::placeholder {
         font-size: 15px;
         margin-left: 4px;
       }
@@ -225,7 +271,35 @@ const Container = styled.div`
       }
     }
     @media screen and (max-width: 600px) {
-      width: 85vw;
+      width: 95vw;
+    }
+    .no-contacts-container {
+      display: none;
+    }
+    @media screen and (max-width: 600px) {
+      .no-contacts-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        img {
+          height: 30vh;
+        }
+        h2 {
+          color: white;
+        }
+        h3 {
+          color: white;
+        }
+        div {
+          background-color: #9a86f3;
+          color: white;
+          margin-top: 20px;
+          padding: 1rem 3rem;
+          border-radius: 15px;
+          font-weight: 700;
+        }
+      }
     }
     .contact {
       background-color: #ffffff34;

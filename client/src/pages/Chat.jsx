@@ -15,12 +15,14 @@ export default function Chat() {
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
   const [showMobileChat, setShowMobileChat] = useState(false);
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const Redirection = async () => {
       if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
         navigate("/login");
       } else {
+        setLoading(true)
         setCurrentUser(
           await JSON.parse(
             localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
@@ -42,13 +44,13 @@ export default function Chat() {
     const Redirection = async () => {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
+          setLoading(true)
           await axios
             .get(
               `${findUserRoute}?username=${currentUser.username.toLowerCase()}`
             )
             .then((res) => setContacts(res.data[0].friends))
-          // const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-          // setContacts(data.data);
+            setLoading(false)
         } else {
           navigate("/setAvatar");
         }
@@ -72,6 +74,7 @@ export default function Chat() {
             setShowMobileChat={setShowMobileChat}
             showMobileChat={showMobileChat}
             setContacts={setContacts}
+            loadingContacts={loading}
           />
           {currentChat === undefined ? (
             <Welcome />
@@ -95,8 +98,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
   align-items: center;
+  gap: 1rem;
   background-color: #131324;
 
   .container {
@@ -109,8 +112,8 @@ const Container = styled.div`
       grid-template-columns: 40% 60%;
     }
     @media screen and (max-width: 600px) {
-      height: 85vh;
-      width: 85vw;
+      height: 90vh;
+      width: 95vw;
       background-color: #00000076;
       display: grid;
       grid-template-columns: 100%;
