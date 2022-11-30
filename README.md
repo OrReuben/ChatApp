@@ -56,7 +56,6 @@ be harder to understand and use in first glance. I recreated a chat that overcom
 
 <p align="center"><img src="https://i.ibb.co/XJjZ27T/chatib-1.png" /></p>
 
-
 ### Avatars
 
 <p align="center"><img src="https://i.ibb.co/jh0srX3/chatib-2.png" /></p>
