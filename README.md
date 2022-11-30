@@ -106,7 +106,9 @@ be harder to understand and use in first glance. I recreated a chat that overcom
 * dotenv
 * bcryptjs
 
-## Demo  <a name="Demo" href="https://chatsite-app.netlify.app/"></a>
+## Demo  <a name="Demo"></a>
+
+[Chatib](https://chatsite-app.netlify.app/)
 
 ## Author  <a name="Author"></a>
 
