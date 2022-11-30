@@ -53,32 +53,32 @@ be harder to understand and use in first glance. I recreated a chat that overcom
 
 ### Register
 
-<p align="center"><img src="https://i.ibb.co/XJjZ27T/chatib-1.png" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/XJjZ27T/chatib-1.png" width="1200" /></p>
 
 
 ### Avatars
 
-<p align="center"><img src="https://i.ibb.co/jh0srX3/chatib-2.png" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/jh0srX3/chatib-2.png" width="1200" /></p>
 
 ### Avatars
 
-<p align="center"><img src="https://i.ibb.co/jh0srX3/chatib-2.png" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/jh0srX3/chatib-2.png" width="1200" /></p>
 
 ### Home Page
 
-<p align="center"><img src="https://i.ibb.co/vBsgKGP/chatib-3.png" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/vBsgKGP/chatib-3.png" width="1200" /></p>
 
 ### Add Friends
 
-<p align="center"><img src="https://i.ibb.co/1mPfbwC/Chatib-4.png" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/1mPfbwC/Chatib-4.png" width="1200" /></p>
 
 ### Friend Requests
 
-<p align="center"><img src="https://i.ibb.co/gmhcd9n/Chatib-5.png" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/gmhcd9n/Chatib-5.png" width="1200" /></p>
 
 ### Chat
 
-<p align="center"><img src="https://i.ibb.co/VvXkRDX/Chatib-6.png" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/VvXkRDX/Chatib-6.png" width="1200" /></p>
 
 ### Responsive
 
