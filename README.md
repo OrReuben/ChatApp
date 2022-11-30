@@ -6,8 +6,13 @@
   * [What are my tools?](#what-are-my-tools)
   * [Running the project](#running-the-project)
   * [Screenshots](#screenshots)
-    + [Homepage](#homepage)
-    + [Upload report images](#upload-report-images)
+    + [Register](#register)
+    + [Avatars](#avatars)
+    + [Home Page](#home-page)
+    + [Add Friends](#add-friends)
+    + [Friend Requests](#friend-requests)
+    + [Chat](#chat)
+    + [Responsive](#responsive-chat)
   * [Technologies](#technologies)
     + [Client-Side](#client-side)
     + [Server-Side](#server-side)
@@ -46,14 +51,38 @@ be harder to understand and use in first glance. I recreated a chat that overcom
 
 ## Screenshots
 
-### Homepage
+### Register
 
-<p align="center"><img src="./public/image.2.jpg" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/XJjZ27T/chatib-1.png" width="300" /></p>
 
 
-### Upload report images
+### Avatars
 
-<p align="center"><img src="./public/image.1.jpg" width="300" /></p>
+<p align="center"><img src="https://i.ibb.co/jh0srX3/chatib-2.png" width="300" /></p>
+
+### Avatars
+
+<p align="center"><img src="https://i.ibb.co/jh0srX3/chatib-2.png" width="300" /></p>
+
+### Home Page
+
+<p align="center"><img src="https://i.ibb.co/vBsgKGP/chatib-3.png" width="300" /></p>
+
+### Add Friends
+
+<p align="center"><img src="https://i.ibb.co/1mPfbwC/Chatib-4.png" width="300" /></p>
+
+### Friend Requests
+
+<p align="center"><img src="https://i.ibb.co/gmhcd9n/Chatib-5.png" width="300" /></p>
+
+### Chat
+
+<p align="center"><img src="https://i.ibb.co/VvXkRDX/Chatib-6.png" width="300" /></p>
+
+### Responsive
+
+<p align="center"><img src="https://i.ibb.co/T46wBjq/Chatib-7.png" width="300" /></p>
 
 ## Technologies:
 
