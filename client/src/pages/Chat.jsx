@@ -15,14 +15,14 @@ export default function Chat() {
   const [currentChat, setCurrentChat] = useState(undefined);
   const [currentUser, setCurrentUser] = useState(undefined);
   const [showMobileChat, setShowMobileChat] = useState(false);
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const Redirection = async () => {
       if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
         navigate("/login");
       } else {
-        setLoading(true)
+        setLoading(true);
         setCurrentUser(
           await JSON.parse(
             localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
@@ -44,13 +44,13 @@ export default function Chat() {
     const Redirection = async () => {
       if (currentUser) {
         if (currentUser.isAvatarImageSet) {
-          setLoading(true)
+          setLoading(true);
           await axios
             .get(
               `${findUserRoute}?username=${currentUser.username.toLowerCase()}`
             )
-            .then((res) => setContacts(res.data[0].friends))
-            setLoading(false)
+            .then((res) => setContacts(res.data[0].friends));
+          setLoading(false);
         } else {
           navigate("/setAvatar");
         }
@@ -63,7 +63,6 @@ export default function Chat() {
     setCurrentChat(chat);
   };
 
-  
   return (
     <>
       <Container>
