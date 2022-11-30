@@ -16,6 +16,7 @@
   * [Technologies](#technologies)
     + [Client-Side](#client-side)
     + [Server-Side](#server-side)
+  * [Demo](#Demo)
   * [Author](#Author)
   
 ## Why did I make it?
@@ -104,6 +105,8 @@ be harder to understand and use in first glance. I recreated a chat that overcom
 * socket.io
 * dotenv
 * bcryptjs
+
+## Demo  <a name="Demo" href="https://chatsite-app.netlify.app/"></a>
 
 ## Author  <a name="Author"></a>
 
