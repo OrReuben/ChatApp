@@ -84,7 +84,6 @@ be harder to understand and use in first glance. I recreated a chat that overcom
 
 ### Client-side:
 * React.JS
-* React Bootstrap
 * React-lottie-player
 * React-toastify
 * React-router-dom
